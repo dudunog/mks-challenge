@@ -1,14 +1,23 @@
-module.exports = {
-  roots: ['<rootDir>/src', '<rootDir>/tests'],
-  collectCoverageFrom: [
-    '<rootDir>/src/**/*.{ts,tsx}',
-    '!<rootDir>/src/main/**/*',
-    '!<rootDir>/src/**/index.ts',
-    '!**/*.d.ts'
-  ],
+const nextJest = require('next/jest')
+
+const createJestConfig = nextJest({
+  dir: './',
+})
+
+const customJestConfig = {
+  moduleDirectories: ['node_modules', '<rootDir>/'],
   coverageDirectory: 'coverage',
-  testEnvironment: 'node',
+  collectCoverageFrom: [
+    '<rootDir>/src/**/*.{ts,tsx}'
+  ],
   transform: {
     '.+\\.(ts|tsx)$': 'ts-jest'
+  },
+  testEnvironment: 'jest-environment-jsdom',
+  moduleNameMapper: {
+    '@/(.*)': '<rootDir>/src/$1'
   }
 }
+
+// createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
+module.exports = createJestConfig(customJestConfig)
